@@ -1,6 +1,12 @@
 import Head from 'next/head'
 
 export default function Home() {
+
+      // Logging env vars
+    console.log(`process.env.NEXT_PUBLIC_ENV_FILE`, process.env.NEXT_PUBLIC_ENV_FILE);
+    console.log(`process.env.NODE_ENV`, process.env.NODE_ENV);
+    console.log(`process.env.NEXT_PUBLIC_TEST`, process.env.NEXT_PUBLIC_TEST);
+
   return (
     <div className="container">
       <Head>

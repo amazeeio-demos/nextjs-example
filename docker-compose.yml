@@ -1,0 +1,55 @@
+version: '3.8'
+
+# Machine name for your project
+x-lagoon-project:
+  # Lagoon project name (leave `&lagoon-project` when you edit this)
+  &lagoon-project nextjs-demo
+
+# Tells Lagoon what to mount into containers
+x-volumes:
+  # Define all volumes you would like to have real-time mounted into the docker containers
+  &default-volumes
+  volumes:
+    - .:/app:delegated # :delegated sets host (i.e container) to 'read-only'
+
+# Environment specific variables
+x-environmemt:
+  &default-environment
+  LAGOON_PROJECT: *lagoon-project
+  # Route that should be used locally, if you are using pygmy, this route *must* end with .docker.amazee.io
+  LAGOON_ROUTE: &default-url http://nextjs-demo.docker.amazee.io
+  # Uncomment if you like to have the system behave like in production
+  #LAGOON_ENVIRONMENT_TYPE: production
+
+x-user:
+  # The default user under which the containers should run. Change this if you are on linux and run with another user than id `1000`
+  &default-user
+  user: '1000'
+
+# Services are essentailly the Docker containers we want to run
+services:
+
+  # SERVICE: Node container
+  node:
+    build:
+      context: ./
+      dockerfile: lagoon/node.dockerfile
+    labels:
+      lagoon.type: node
+    ## Local only from here
+    << : *default-volumes # loads the defined volumes from the top
+    command: npm run dev
+    volumes:
+      - ./src:/app/src:delegated
+      - ./package.json:/app/package.json:delegated
+    environment:
+      << : *default-environment # loads the defined environment variables from the top
+      LAGOON_LOCALDEV_HTTP_PORT: 3000
+    networks:
+      - amazeeio-network
+      - default
+
+# Setup up amazeeio-network
+networks:
+  amazeeio-network:
+    external: true

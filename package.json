@@ -1,11 +1,15 @@
 {
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
+    "dev": "NODE_OPTIONS='--inspect' next dev",
+    "start": "NODE_ENV=production next start",
+    "build": "env-cmd --verbose -f .lagoon.env --use-shell next build",
+    "dev:build": "env-cmd --verbose -f .lagoon.env.dev --use-shell next build",
+    "staging:build": "NODE_ENV=production env-cmd --verbose -f .lagoon.env.staging --use-shell next build",
+    "prod:build": "NODE_ENV=production env-cmd --verbose -f .lagoon.env.main --use-shell next build"
   },
   "dependencies": {
+    "env-cmd": "^10.1.0",
     "next": "latest",
     "react": "17.0.2",
     "react-dom": "17.0.2"
